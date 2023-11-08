@@ -97,7 +97,7 @@ python3Packages.buildPythonPackage {
     # https://docs.amd.com/bundle/ROCm-Deep-Learning-Guide-v5.4.3/page/Troubleshooting.html
     " --set-default HSA_OVERRIDE_GFX_VERSION 10.3.0"
 
-    '' --run 'export INVOKEAI_ROOT="''${INVOKEAI_ROOT:-$HOME/invokeai}"' ''
+    '' --run 'export INVOKEAI_ROOT="''${INVOKEAI_ROOT:-$HOME/.invokeai}"' ''
     '' --run '
       if [[ ! -d "$INVOKEAI_ROOT" && "''${0##*/}" != invokeai-configure ]]
       then
