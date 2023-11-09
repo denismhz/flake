@@ -10,6 +10,10 @@
     nixpkgs = {
       url = "github:NixOS/nixpkgs/nixos-unstable";
     };
+    a1111-src = {
+      url = "github:automatic1111/stable-diffusion-webui/v1.6.0";
+      flake = false;
+    };
     invokeai-src = {
       url = "github:invoke-ai/InvokeAI/v3.3.0post3";
       flake = false;
@@ -51,6 +55,7 @@
         hercules-ci-effects.flakeModule
 #        ./modules/nixpkgs-config
         ./overlays
+        ./projects/automatic1111
         ./projects/invokeai
         ./projects/textgen
         ./website

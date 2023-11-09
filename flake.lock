@@ -1,5 +1,22 @@
 {
   "nodes": {
+    "a1111-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1693456714,
+        "narHash": "sha256-V16VkOq0+wea4zbfeKBLAQBth022ZkpG8lh0p9u4txs=",
+        "owner": "automatic1111",
+        "repo": "stable-diffusion-webui",
+        "rev": "5ef669de080814067961f28357256e8fe27544f4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "automatic1111",
+        "ref": "v1.6.0",
+        "repo": "stable-diffusion-webui",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -185,6 +202,7 @@
     },
     "root": {
       "inputs": {
+        "a1111-src": "a1111-src",
         "flake-parts": "flake-parts",
         "hercules-ci-effects": "hercules-ci-effects",
         "invokeai-src": "invokeai-src",
