@@ -7,11 +7,19 @@
   description = "A Nix Flake that makes AI reproducible and easy to run";
 
   inputs = {
+    sgm-src = {
+      url = "github:Stability-AI/generative-models";
+      flake = false;
+    };
     nixpkgs = {
       url = "github:NixOS/nixpkgs/nixos-unstable";
     };
     a1111-src = {
-      url = "github:automatic1111/stable-diffusion-webui/v1.6.0";
+      url = "github:automatic1111/stable-diffusion-webui";
+      flake = false;
+    };
+    sd-src = {
+      url = "github:Stability-AI/stablediffusion";
       flake = false;
     };
     invokeai-src = {

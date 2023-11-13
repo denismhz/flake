@@ -3,16 +3,15 @@
     "a1111-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1693456714,
-        "narHash": "sha256-V16VkOq0+wea4zbfeKBLAQBth022ZkpG8lh0p9u4txs=",
+        "lastModified": 1699030214,
+        "narHash": "sha256-UQ2cJ92JdSHOe0g5IkaCXPO0MYyWpLAcp6f8p+T6bxs=",
         "owner": "automatic1111",
         "repo": "stable-diffusion-webui",
-        "rev": "5ef669de080814067961f28357256e8fe27544f4",
+        "rev": "4afaaf8a020c1df457bcf7250cb1c7f609699fa7",
         "type": "github"
       },
       "original": {
         "owner": "automatic1111",
-        "ref": "v1.6.0",
         "repo": "stable-diffusion-webui",
         "type": "github"
       }
@@ -207,7 +206,41 @@
         "hercules-ci-effects": "hercules-ci-effects",
         "invokeai-src": "invokeai-src",
         "nixpkgs": "nixpkgs_2",
+        "sd-src": "sd-src",
+        "sgm-src": "sgm-src",
         "textgen-src": "textgen-src"
+      }
+    },
+    "sd-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1679711060,
+        "narHash": "sha256-yEtrz/JTq53JDI4NZI26KsD8LAgiViwiNaB2i1CBs/I=",
+        "owner": "Stability-AI",
+        "repo": "stablediffusion",
+        "rev": "cf1d67a6fd5ea1aa600c4df58e5b47da45f6bdbf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Stability-AI",
+        "repo": "stablediffusion",
+        "type": "github"
+      }
+    },
+    "sgm-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1692287310,
+        "narHash": "sha256-Gvpjfv5hFEeQl67OeTXVhiB4zvgV5UZ5B/ar4rBW0d0=",
+        "owner": "Stability-AI",
+        "repo": "generative-models",
+        "rev": "477d8b9a7730d9b2e92b326a770c0420d00308c9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Stability-AI",
+        "repo": "generative-models",
+        "type": "github"
       }
     },
     "textgen-src": {

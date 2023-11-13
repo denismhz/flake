@@ -10,7 +10,8 @@ in
     commonOverlays = [
       overlays.python-fixPackages
       (l.overlays.callManyPackages [
-        ../../packages/mediapipe
+        ../../packages/k_diffusion
+        ../../packages/openclip
         ../../packages/safetensors
         ../../packages/easing-functions
         ../../packages/dynamicprompts
@@ -18,8 +19,8 @@ in
         ../../packages/fastapi
         ../../packages/fastapi-events
         ../../packages/fastapi-socketio
-        ../../packages/starlette
         ../../packages/pytorch-lightning
+        ../../packages/starlette
         ../../packages/compel
         ../../packages/taming-transformers-rom1504
         ../../packages/albumentations
@@ -43,6 +44,14 @@ in
         ../../packages/getpass-asterisk
         ../../packages/mediapipe
         ../../packages/python-engineio
+        ../../packages/lpips
+        ../../packages/blip
+        ../../packages/gradio
+        ../../packages/gradio-client
+        ../../packages/analytics-python
+        ../../packages/tomesd
+        ../../packages/blendmodes
+        ../../packages/xformers
       ])
       (final: prev: lib.mapAttrs
         (_: pkg: pkg.overrideAttrs (old: {
@@ -74,7 +83,7 @@ in
 
     src = inputs.a1111-src;
 
-    mkAutomatic1111Variant = args: pkgs.callPackage ./package.nix ({ inherit src; } // args);
+    mkAutomatic1111Variant = args: pkgs.callPackage ./package.nix ({ inherit src; sd-src = inputs.sd-src; sgm-src = inputs.sgm-src; } // args);
   in {
     packages = {
       a1111-nvidia = mkAutomatic1111Variant {
@@ -83,7 +92,7 @@ in
     };
     legacyPackages = {
       a1111-amd = throw ''
-        BREEEE AMD?!
+        AMD not done yet.
       '';
     };
   };

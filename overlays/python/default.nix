@@ -14,6 +14,8 @@ lib: {
     wandb = relaxProtobuf (prev.wandb.overridePythonAttrs {
       doCheck = false;
     });
+    anyio = prev.anyio.overridePythonAttrs { doCheck = false; dontUsePytestCheck = true;};
+    mocket = prev.mocket.overridePythonAttrs { doCheck = false; dontUsePytestCheck = true;};
     markdown-it-py = prev.markdown-it-py.overrideAttrs (old: {
       nativeBuildInputs = old.nativeBuildInputs ++ [ final.pythonRelaxDepsHook ];
       pythonRelaxDeps = [ "linkify-it-py" ];
