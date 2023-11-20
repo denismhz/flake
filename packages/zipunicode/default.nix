@@ -1,6 +1,8 @@
 { lib
 , buildPythonPackage
 , fetchPypi
+, setuptools
+, chardet
 }:
 
 buildPythonPackage rec {
@@ -10,16 +12,16 @@ buildPythonPackage rec {
   
   src = fetchPypi {
     inherit pname version;
-    sha256 = "";
+    sha256 = "sha256-2MbEWa7LnDENKhgzid664RULiAUSkW+5kBIDaOXTN/M=";
   };
 
-  propagatedBuildInputs = [ ];
+  propagatedBuildInputs = [ setuptools chardet ];
 
   doCheck = false;
 
   meta = with lib; {
-    description = "";
-    homepage = "https://github.com/lovvskillz/python-discord-webhook";
+    description = "Make extracted unreadable filename problem gone away.";
+    homepage = "https://github.com/Dragon2fly/ZipUnicode";
     maintainers = with maintainers; [ ];
   };
 }

@@ -19,6 +19,7 @@ python3Packages.buildPythonPackage {
   version = "v1.6.0";
   inherit src;
   propagatedBuildInputs = with python3Packages; [
+      moviepy #for prompt travel
       zipunicode #for civitaui browser+
       imageio #animatediff create webm and shit
       av #animatediff create webm and shit
