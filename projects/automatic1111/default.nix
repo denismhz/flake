@@ -57,6 +57,7 @@ in
         ../../packages/tomesd
         ../../packages/blendmodes
         ../../packages/xformers
+        ../../packages/zipunicode
       ])
       (final: prev: lib.mapAttrs
         (_: pkg: pkg.overrideAttrs (old: {
