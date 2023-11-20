@@ -7,6 +7,14 @@
   description = "A Nix Flake that makes AI reproducible and easy to run";
 
   inputs = {
+    bark-gui-src = {
+      url = "github:C0untFloyd/bark-gui";
+      flake = false;
+    };
+    kohya_ss-src = {
+      url = "github:bmaltais/kohya_ss";
+      flake = false;
+    };
     sgm-src = {
       url = "github:Stability-AI/generative-models";
       flake = false;
@@ -66,6 +74,8 @@
         ./projects/automatic1111
         ./projects/invokeai
         ./projects/textgen
+        ./projects/kohya_ss
+        ./projects/bark-gui
         ./website
       ];
     };

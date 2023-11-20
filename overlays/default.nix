@@ -1,13 +1,13 @@
 { lib, ... }:
 
 let
-  l = lib.extend (import ./lib.nix);
+l = lib.extend (import ./lib.nix);
 
-  overlaySets = {
-    python = import ./python l;
-  };
+overlaySets = {
+  python = import ./python l;
+};
 
-  prefixAttrs = prefix: lib.mapAttrs' (name: value: lib.nameValuePair "${prefix}-${name}" value);
+prefixAttrs = prefix: lib.mapAttrs' (name: value: lib.nameValuePair "${prefix}-${name}" value);
 
 in
 
@@ -18,8 +18,8 @@ in
     };
     overlays = lib.pipe overlaySets [
       (lib.mapAttrs prefixAttrs)
-      (lib.attrValues)
-      (lib.foldl' (a: b: a // b) {})
+        (lib.attrValues)
+        (lib.foldl' (a: b: a // b) {})
     ];
   };
 }

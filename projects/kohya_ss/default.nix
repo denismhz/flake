@@ -10,11 +10,7 @@ in
     commonOverlays = [
       overlays.python-fixPackages
       (l.overlays.callManyPackages [
-        
-        ../../packages/discord-webhook
         ../../packages/deforum
-        ../../packages/ultralytics
-        ../../packages/rich
         ../../packages/k_diffusion
         ../../packages/openclip
         ../../packages/safetensors
@@ -86,17 +82,17 @@ in
       ]);
     };
 
-    src = inputs.a1111-src;
+    src = inputs.kohya_ss-src;
 
-    mkAutomatic1111Variant = args: pkgs.callPackage ./package.nix ({ inherit src; sd-src = inputs.sd-src; sgm-src = inputs.sgm-src; } // args);
+    mkkohya_ssVariant = args: pkgs.callPackage ./package.nix ({ inherit src; } // args);
   in {
     packages = {
-      a1111-nvidia = mkAutomatic1111Variant {
+      kohya_ss-nvidia = mkkohya_ssVariant {
         python3Packages = python3Variants.nvidia;
       };
     };
     legacyPackages = {
-      a1111-amd = throw ''
+      kohya_ss-amd = throw ''
         AMD not done yet.
       '';
     };
@@ -104,22 +100,22 @@ in
 
   flake.nixosModules = let
     packageModule = pkgAttrName: { pkgs, ... }: {
-      services.a1111.package = withSystem pkgs.system (
+      services.kohya_ss.package = withSystem pkgs.system (
         { config, ... }: lib.mkOptionDefault config.packages.${pkgAttrName}
       );
     };
   in {
-    a1111 = ./nixos;
-    a1111-amd = {
+    kohya_ss = ./nixos;
+    kohya_ss-amd = {
       imports = [
         config.flake.nixosModules.invokeai
-        (packageModule "a1111-amd")
+        (packageModule "kohya_ss-amd")
       ];
     };
-    invokeai-nvidia = {
+    kohya_ss-nvidia = {
       imports = [
         config.flake.nixosModules.invokeai
-        (packageModule "a1111-nvidia")
+        (packageModule "kohya_ss-nvidia")
       ];
     };
   };

@@ -19,6 +19,10 @@ python3Packages.buildPythonPackage {
   version = "v1.6.0";
   inherit src;
   propagatedBuildInputs = with python3Packages; [
+      discord-webhook
+      numexpr
+      deforum
+      ultralytics
       k_diffusion
       inflection
       gdown
@@ -27,6 +31,7 @@ python3Packages.buildPythonPackage {
       openclip
       semver
       numpy
+      rich
       torchsde
       uvicorn
       pyperclip
@@ -78,7 +83,6 @@ python3Packages.buildPythonPackage {
       safetensors
       datasets
       accelerate
-      huggingface-hub
       easing-functions
       dynamicprompts
       torchvision
@@ -94,63 +98,63 @@ python3Packages.buildPythonPackage {
       ]; 
   nativeBuildInputs = with python3Packages; [ pythonRelaxDepsHook pip ];
   pythonRemoveDeps = [ "clip" "pyreadline3" "flaskwebgui" "opencv-python" ];
-  pythonRelaxDeps = [ "dnspython" "flask" "requests" "numpy" "pytorch-lightning" "torchsde" "uvicorn" "invisible-watermark" "accelerate" "scikit-image" "safetensors" "huggingface-hub" "torchvision" "test-tube" "fastapi" ];
+  pythonRelaxDeps = [ "dnspython" "flask" "requests" "numpy" "pytorch-lightning" "torchsde" "uvicorn" "invisible-watermark" "accelerate" "scikit-image" "safetensors" "torchvision" "test-tube" "fastapi" ];
 
   dontUsePytestCheck = true;
 
   doCheck = false;
 
   buildPhase = ''
-                runHook preBuild
-                mkdir -p dist
-                cp -r . $out
-                chmod -R +w $out
-                cd $out
-                
-                #replace dirs in paths_internal.py
-                #mkdir -p /var/lib/.webui
-                sed -i 's#os\.path\.join(script_path, "config_states")#os\.path\.join(data_path, "config_states")#' ./modules/paths_internal.py
-                #delete lines trying to pull git repos and setting up tests in launch.py
-                sed -i '28,43d' launch.py
+        runHook preBuild
+        mkdir -p dist
+        cp -r . $out
+        chmod -R +w $out
+        cd $out
+        
+        #replace dirs in paths_internal.py
+        #mkdir -p /var/lib/.webui
+        sed -i 's#os\.path\.join(script_path, "config_states")#os\.path\.join(data_path, "config_states")#' ./modules/paths_internal.py
+        #delete lines trying to pull git repos and setting up tests in launch.py
+        sed -i '28,43d' launch.py
 
-                #firstly, we need to make launch.py runnable by adding python shebang
-                cat <<-EOF > exec_launch.py.unwrapped
-                $(echo "#!/usr/bin/python") 
-                $(cat launch.py) 
-                EOF
-                chmod +x exec_launch.py.unwrapped
+        #firstly, we need to make launch.py runnable by adding python shebang
+        cat <<-EOF > exec_launch.py.unwrapped
+        $(echo "#!/usr/bin/python") 
+        $(cat launch.py) 
+        EOF
+        chmod +x exec_launch.py.unwrapped
 
-                #creating wrapper around launch.py with PYTHONPATH correctly set
-                makeWrapper "$(pwd)/exec_launch.py.unwrapped" exec_launch.py \
-                  --set-default PYTHONPATH $PYTHONPATH
+        #creating wrapper around launch.py with PYTHONPATH correctly set
+        makeWrapper "$(pwd)/exec_launch.py.unwrapped" exec_launch.py \
+          --set-default PYTHONPATH $PYTHONPATH
 
-                mkdir $out/bin
-                pushd $out/bin
-                ln -s ../exec_launch.py launch.py
-                buck='$' #escaping $ inside shell inside shell is tricky
-                #next is an additional shell wrapper, which sets sensible default args for CLI
-                #additional arguments will be passed further
-                cat <<-EOF > flake-launch
-                #!/usr/bin/env bash 
-                pushd $out        #For some reason, fastapi only works when current workdir is set inside the repo
-                trap "popd" EXIT
+        mkdir $out/bin
+        pushd $out/bin
+        ln -s ../exec_launch.py launch.py
+        buck='$' #escaping $ inside shell inside shell is tricky
+        #next is an additional shell wrapper, which sets sensible default args for CLI
+        #additional arguments will be passed further
+        cat <<-EOF > flake-launch
+        #!/usr/bin/env bash 
+        pushd $out        #For some reason, fastapi only works when current workdir is set inside the repo
+        trap "popd" EXIT
 
-                "$out/bin/launch.py" --skip-install "$buck{@}"
-                EOF
-                  # below lie remnants of my attempt to make webui use similar paths as InvokeAI for models download
-                  # additions of such options in upstream is a welcome sign, however they're mostly ignored and therefore useless
-                  # TODO: check in 6 months, maybe it'll work
-                  # For now, your best bet is to use ZFS dataset with dedup enabled or make symlinks after the fact
-                    
-                  #--codeformer-models-path "\$mp/codeformer" \
-                  #--gfpgan-models-path "\$mp/gfpgan" --esrgan-models-path "\$mp/esrgan" \
-                  #--bsrgan-models-path "\$mp/bsrgan" --realesrgan-models-path "\$mp/realesrgan" \
-                  #--clip-models-path "\$mp/clip" 
-                chmod +x flake-launch
-                popd
+        "$out/bin/launch.py" --skip-install "$buck{@}"
+        EOF
+          # below lie remnants of my attempt to make webui use similar paths as InvokeAI for models download
+          # additions of such options in upstream is a welcome sign, however they're mostly ignored and therefore useless
+          # TODO: check in 6 months, maybe it'll work
+          # For now, your best bet is to use ZFS dataset with dedup enabled or make symlinks after the fact
+            
+          #--codeformer-models-path "\$mp/codeformer" \
+          #--gfpgan-models-path "\$mp/gfpgan" --esrgan-models-path "\$mp/esrgan" \
+          #--bsrgan-models-path "\$mp/bsrgan" --realesrgan-models-path "\$mp/realesrgan" \
+          #--clip-models-path "\$mp/clip" 
+        chmod +x flake-launch
+        popd
 
-                runHook postBuild
-              '';
+        runHook postBuild
+      '';
               installPhase = ''
                 runHook preInstall
 
@@ -164,6 +168,7 @@ python3Packages.buildPythonPackage {
                 ln -s ${codeformer}/ CodeFormer
                 ln -s ${blip}/ BLIP
                 popd
+                echo $PATH
                 runHook postInstall
               '';
   meta = {
