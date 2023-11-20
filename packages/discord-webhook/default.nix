@@ -1,19 +1,20 @@
 { lib
 , buildPythonPackage
 , fetchPypi
+, poetry-core
 }:
 
 buildPythonPackage rec {
   pname = "discord-webhook";
-  version = "1.3.0";
+  version = "1.2.1";
   format = "pyproject";
   
   src = fetchPypi {
     inherit pname version;
-    sha256 = "";
+    sha256 = "sha256-COB3vzKYNwvyMsUvGqrph/J6WbTRLdDaaA85f5N73ZU=";
   };
 
-  propagatedBuildInputs = [ ];
+  propagatedBuildInputs = [ poetry-core ];
 
   doCheck = false;
 

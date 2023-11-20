@@ -78,27 +78,18 @@ in
     ];
 
     python3Variants = {
-      amd = l.overlays.applyOverlays pkgs.python3Packages (commonOverlays ++ [
-        overlays.python-torchRocm
-      ]);
       nvidia = l.overlays.applyOverlays pkgs.python3Packages (commonOverlays ++ [
         overlays.python-torchCuda
       ]);
     };
 
     src = inputs.a1111-src;
-
     mkAutomatic1111Variant = args: pkgs.callPackage ./package.nix ({ inherit src; sd-src = inputs.sd-src; sgm-src = inputs.sgm-src; } // args);
   in {
     packages = {
       a1111-nvidia = mkAutomatic1111Variant {
         python3Packages = python3Variants.nvidia;
       };
-    };
-    legacyPackages = {
-      a1111-amd = throw ''
-        AMD not done yet.
-      '';
     };
   };
 
@@ -110,12 +101,6 @@ in
     };
   in {
     a1111 = ./nixos;
-    a1111-amd = {
-      imports = [
-        config.flake.nixosModules.invokeai
-        (packageModule "a1111-amd")
-      ];
-    };
     invokeai-nvidia = {
       imports = [
         config.flake.nixosModules.invokeai

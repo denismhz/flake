@@ -19,10 +19,12 @@ python3Packages.buildPythonPackage {
   version = "v1.6.0";
   inherit src;
   propagatedBuildInputs = with python3Packages; [
-      discord-webhook
-      numexpr
-      deforum
-      ultralytics
+      imageio #animatediff create webm and shit
+      av #animatediff create webm and shit
+      discord-webhook #for dreambooth i think
+      numexpr #for some extension
+      deforum #for some extension
+      ultralytics #extension
       k_diffusion
       inflection
       gdown
@@ -31,7 +33,7 @@ python3Packages.buildPythonPackage {
       openclip
       semver
       numpy
-      rich
+      rich #extension
       torchsde
       uvicorn
       pyperclip
