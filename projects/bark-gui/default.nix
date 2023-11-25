@@ -1,44 +1,51 @@
+
 { config, inputs, lib, withSystem, ... }:
+let
+  l = lib // config.flake.lib;
+  inherit (config.flake) overlays;
+in
 {
-  perSystem = { config, pkgs, ... }:
-    let
-      src = inputs.bark-gui-src;
-      overlays = [
-        (
-          final: prev: {
-            final.python310 = prev.python310.override {
-              enableOptimizations = true;
-              reproducibleBuild = false;
-              self = final.python310;
-              buildInputs = [ final.ffmpeg-full ];
-            };
-            pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-              (
-                python-final: python-prev: {
-                  pytorch-seed = python-final.callPackage ../../Packages/pytorch-seed { };
-                  audiolm-pytorch = python-final.callPackage ../../Packages/audiolm-pytorch { };
-                  vector-quantize-pytorch = python-final.callPackage ../../Packages/vector-quantize-pytorch { };
-                  local-attention = python-final.callPackage ../../Packages/local-attention { };
-                  ema-pytorch = python-final.callPackage ../../Packages/ema-pytorch { };
+  perSystem = { config, pkgs, ... }: let
+    commonOverlays = [
+      overlays.python-fixPackages
+      (l.overlays.callManyPackages [
+        ../../packages/audiolm-pytorch
+        ../../packages/ema-pytorch
+        ../../packages/local-attention
+        ../../packages/pytorch-seed
+        ../../packages/vector-quantize-pytorch
+      ])
+    ];
 
-                  openai-triton = python-prev.openai-triton-bin;
-                  torch = python-prev.torch-bin;
-                  torchaudio = python-prev.torchaudio-bin;
+    python3Variants = {
+      nvidia = l.overlays.applyOverlays pkgs.python3Packages (commonOverlays ++ [
+        overlays.python-torchCuda
+      ]);
+    };
 
-                  #bark-gui = python-final.callPackage ../../Packages/bark-gui.nix { };
-                }
-              )
-            ];
-          }
-        )
-      ];
-      mkbark-guiVariant = args: pkgs.callPackage ./package.nix ({ inherit src; } // args);
-    in
-    {
-      packages = {
-        bark-gui = mkbark-guiVariant {
-          inherit overlays;
-        };
+    src = inputs.bark-gui-src;
+    mkbark-guiVariant = args: pkgs.callPackage ./package.nix ({ inherit src;  } // args);
+  in {
+    packages = {
+      bark-gui-nvidia = mkbark-guiVariant {
+        python3Packages = python3Variants.nvidia;
       };
     };
+  };
+
+  flake.nixosModules = let
+    packageModule = pkgAttrName: { pkgs, ... }: {
+      services.a1111.package = withSystem pkgs.system (
+        { config, ... }: lib.mkOptionDefault config.packages.${pkgAttrName}
+      );
+    };
+  in {
+    bark-gui = ./nixos;
+    invokeai-nvidia = {
+      imports = [
+        config.flake.nixosModules.invokeai
+        (packageModule "bark-gui-nvidia")
+      ];
+    };
+  };
 }

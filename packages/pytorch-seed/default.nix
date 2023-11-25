@@ -2,8 +2,8 @@
 , buildPythonPackage
 , fetchPypi
 , setuptools
-, torch
 , numpy
+, torch
 }:
 
 buildPythonPackage rec {

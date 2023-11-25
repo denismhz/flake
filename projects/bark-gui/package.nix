@@ -1,77 +1,63 @@
-{ lib
-, buildPythonPackage
-, fetchFromGitHub
-, writeShellScript
-, setuptools
-
-  # dependencies
-, fairseq
-, audiolm-pytorch
-, gradio
-, funcy
-, linkify-it-py
-, mutagen
-, pytorch-seed
-, pyyaml
-, sentencepiece
-, transformers
-
-, ffmpeg-full
-
+{ python3Packages
+, # misc
+  lib
 , src
+  # extra deps
 }:
-
-buildPythonPackage rec {
+python3Packages.buildPythonPackage {
   pname = "bark-gui";
-  format = "pyproject";
-  version = "0.7.1";
-
-  propagatedBuildInputs = [
-    fairseq
+  format = "setuptools";
+  version = "07.1";
+  inherit src;
+  propagatedBuildInputs = with python3Packages; [
     audiolm-pytorch
-    gradio
+    boto3
+    ema-pytorch
+    encodec
     funcy
-    linkify-it-py
-    mutagen
+    gradio
+    local-attention
     pytorch-seed
-    pyyaml
-    sentencepiece
+    safetensors
+    scipy
+    torch-bin
+    torchaudio-bin
     transformers
+    vector-quantize-pytorch
   ];
-  buildInputs = [
-    setuptools
-    ffmpeg-full
+  #nativeBuildInputs = with python3Packages; [ pythonRelaxDepsHook pip ];
+  nativeBuildInputs = with python3Packages; [ setuptools pip ];
+  #pythonRemoveDeps = [ "clip" "pyreadline3" "flaskwebgui" "opencv-python" ];
+  pythonRelaxDeps = [ "dnspython" "flask" "requests" "numpy" "pytorch-lightning" "torchsde" "uvicorn" "invisible-watermark" "accelerate" "scikit-image" "safetensors" "torchvision" "test-tube" "fastapi" ];
+
+  makeWrapperArgs = [
+    '' --set-default PYTHONPATH=$PYTHONPATH ''
   ];
 
-  dontWrapPythonPrograms = true;
-  postFixup =
-    let
-      setupScript = writeShellScript "bark-gui" ''
-        if [[ ! -d $HOME/.bark-gui ]]; then
-          mkdir -p $HOME
-          cp -r ${src} $HOME/.bark-gui
-          chmod 0755 $HOME/.bark-gui
-          chmod 0644 $HOME/.bark-gui/config.yaml
-          mkdir -p $HOME/.bark-gui/training/data/output
-          mkdir -p $HOME/.bark-gui/training/inputtext
-          chmod 755 $HOME/.bark-gui/training/data/output $HOME/.bark-gui/training/inputtext $HOME/.bark-gui/bark/assets/prompts/custom/
-        fi
-        pushd "$PWD"
-        cd $HOME/.bark-gui/
-        MYOLDPATH="$PATH"
-        export PATH="$PATH:${ffmpeg-full.bin}/bin/"
-        python webui.py "$@"
-        export PATH="$MYOLDPATH"
-        popd
-      '';
-    in
-    ''
-      mkdir -p $out/bin
-      ln -s ${setupScript} $out/bin/bark-gui
-    '';
+  buildPhase = ''
+    mkdir -p dist
+    runHook preBuild
+    cp -r . $out
+    chmod -R +w $out
+    cd $out
+
+    chmod +x webui.py
+    #add shbang to webui.py
+    cat <<-EOF > webui.py
+    $(echo "#!/usr/bin/python") 
+    $(cat webui.py) 
+    EOF
+
+    mkdir -p $out/bin
+    ln -s webui-wrapped.py $out/bin/bark-gui 
+    makeWrapper "$(pwd)/webui.py" "$out/bin/bark-gui" --set-default PYTHONPATH=$PYTHONPATH
+    chmod +x $out/bin/bark-gui
+        
+    runHook postBuild
+  '';
 
   meta = {
-    description = "A Gradio Web UI for an extended - easy to use - Bark Version";
+    description = "A Gradio Web UI for an extended - easy to use - Bark Version.";
     homepage = "https://github.com/C0untFloyd/bark-gui";
     mainProgram = "bark-gui";
   };

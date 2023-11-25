@@ -7,6 +7,9 @@
   description = "A Nix Flake that makes AI reproducible and easy to run";
 
   inputs = {
+    nixpkgs-stable = {
+      url = github:NixOS/nixpkgs/nixos-23.05;
+    };
     bark-gui-src = {
       url = "github:C0untFloyd/bark-gui";
       flake = false;
@@ -49,7 +52,7 @@
   };
   outputs = { flake-parts, invokeai-src, hercules-ci-effects, ... }@inputs:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      perSystem = { system, ... }: {
+      perSystem = { system, ... }:{
         _module.args.pkgs = import inputs.nixpkgs { config.allowUnfree = true; inherit system; };
         legacyPackages = {
           koboldai = builtins.throw ''

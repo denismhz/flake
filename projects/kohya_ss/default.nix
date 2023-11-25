@@ -84,11 +84,10 @@ in
 
     src = inputs.kohya_ss-src;
 
-    mkkohya_ssVariant = args: pkgs.callPackage ./package.nix ({ inherit src; } // args);
+    mkkohya_ssVariant = args: python3Variants.nvidia.callPackage ./package.nix ({ inherit src; } // args);
   in {
     packages = {
       kohya_ss-nvidia = mkkohya_ssVariant {
-        python3Packages = python3Variants.nvidia;
       };
     };
     legacyPackages = {
