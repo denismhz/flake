@@ -70,9 +70,9 @@ python3Packages.buildPythonPackage {
     chmod +x launch.py
     makeWrapper "$out/launch.py" $out/bin/launch-wrapped.py \
       --run 'export COMMANDLINE_ARGS="''${COMMANDLINE_ARGS:-\
-      --data-dir $HOME/.webui --skip-install \
-      --theme dark --ckpt-dir $HOME/.webui/models/ckpt \
-      --embeddings-dir $HOME/.webui/models/embeddings \
+      --data-dir $HOME/webui --skip-install \
+      --theme dark --ckpt-dir $HOME/webui/models/ckpt \
+      --embeddings-dir $HOME/webui/models/embeddings \
       --medvram --no-half-vae}"' \
       --set-default PYTHONPATH $PYTHONPATH \
       --chdir $out
