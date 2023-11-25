@@ -10,67 +10,7 @@ in
     commonOverlays = [
       overlays.python-fixPackages
       (l.overlays.callManyPackages [
-        ../../packages/deforum
-        ../../packages/k_diffusion
-        ../../packages/openclip
-        ../../packages/safetensors
-        ../../packages/easing-functions
-        ../../packages/dynamicprompts
-        ../../packages/controlnet-aux
-        ../../packages/fastapi
-        ../../packages/fastapi-events
-        ../../packages/fastapi-socketio
-        ../../packages/pytorch-lightning
-        ../../packages/starlette
-        ../../packages/compel
-        ../../packages/taming-transformers-rom1504
-        ../../packages/albumentations
-        ../../packages/qudida
-        ../../packages/gfpgan
-        ../../packages/basicsr
-        ../../packages/facexlib
-        ../../packages/realesrgan
-        ../../packages/codeformer
-        ../../packages/clipseg
-        ../../packages/kornia
-        ../../packages/picklescan
-        ../../packages/diffusers
-        ../../packages/pypatchmatch
-        ../../packages/torch-fidelity
-        ../../packages/resize-right
-        ../../packages/torchdiffeq
-        ../../packages/accelerate
-        ../../packages/clip-anytorch
-        ../../packages/clean-fid
-        ../../packages/getpass-asterisk
-        ../../packages/mediapipe
-        ../../packages/python-engineio
-        ../../packages/lpips
-        ../../packages/blip
-        ../../packages/gradio
-        ../../packages/gradio-client
-        ../../packages/analytics-python
-        ../../packages/tomesd
-        ../../packages/blendmodes
-        ../../packages/xformers
       ])
-      (final: prev: lib.mapAttrs
-        (_: pkg: pkg.overrideAttrs (old: {
-          nativeBuildInputs = old.nativeBuildInputs ++ [ final.pythonRelaxDepsHook ];
-          pythonRemoveDeps = [ "opencv-python-headless" "opencv-python" "tb-nightly" "clip" ];
-        }))
-        {
-          inherit (prev)
-            albumentations
-            qudida
-            gfpgan
-            basicsr
-            facexlib
-            realesrgan
-            clipseg
-          ;
-        }
-      )
     ];
 
     python3Variants = {
@@ -84,10 +24,11 @@ in
 
     src = inputs.kohya_ss-src;
 
-    mkkohya_ssVariant = args: python3Variants.nvidia.callPackage ./package.nix ({ inherit src; } // args);
+    mkkohya_ssVariant = args: pkgs.callPackage ./package.nix ({ inherit src; } // args);
   in {
     packages = {
       kohya_ss-nvidia = mkkohya_ssVariant {
+        python3Packages = python3Variants.nvidia;
       };
     };
     legacyPackages = {
