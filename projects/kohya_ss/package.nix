@@ -32,7 +32,10 @@ python3Packages.buildPythonPackage {
     #why do i have to replace all the paths :(
     substituteInPlace ./finetune_gui.py ./library/localization.py ./lora_gui.py ./kohya_gui.py \
       --replace './' "$out/"
+    sed -i "1i #!/bin/python" $out/library/blip_caption_gui.py
+    substituteInPlace ./library/blip_caption_gui.py --replace python3 python
     echo "$(python --version)"
+    cat ./library/blip_caption_gui.py
     makeWrapper $out/kohya_gui.py $out/bin/gui_wrapped.py --set-default PYTHONPATH $PYTHONPATH 
     chmod +x $out/bin/gui_wrapped.py
 
