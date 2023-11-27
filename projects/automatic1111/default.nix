@@ -92,7 +92,7 @@ in
       a1111 = ./nixos;
       a1111-nvidia = {
         imports = [
-          config.flake.nixosModules.invokeai
+          config.flake.nixosModules.a1111
           (packageModule "a1111-nvidia")
         ];
       };
