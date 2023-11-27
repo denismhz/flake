@@ -123,7 +123,7 @@ in
       };
     };
     systemd.tmpfiles.rules = [
-      "d '${cfg.settings.data-dir}/*' 0755 ${cfg.user} ${cfg.group} - -"
+      "d '${cfg.settings.data-dir}/' 0755 ${cfg.user} ${cfg.group} - -"
       "d '${cfg.settings.data-dir}/configs' 0755 ${cfg.user} ${cfg.group} - -"
       "d '${cfg.settings.data-dir}/.home' 0750 ${cfg.user} ${cfg.group} - -"
     ];
