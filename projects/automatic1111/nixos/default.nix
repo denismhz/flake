@@ -8,33 +8,33 @@ let
     floatToString optionalString
   ;
 
-  cfg = config.services.invokeai;
+  cfg = config.services.a1111;
 in
 
 {
-  imports = map ({ old, new ? old }: mkRenamedOptionModule [ "services" "invokeai" old ] [ "services" "invokeai" "settings" new ]) [
+  imports = map ({ old, new ? old }: mkRenamedOptionModule [ "services" "a1111" old ] [ "services" "a1111" "settings" new ]) [
     { old = "host"; }
     { old = "port"; }
     { old = "dataDir"; new = "root"; }
     { old = "precision"; }
   ];
   options.services.invokeai = {
-    enable = mkEnableOption "InvokeAI Web UI for Stable Diffusion";
+    enable = mkEnableOption "Automatic1111 UI for Stable Diffusion";
 
     package = mkOption {
-      description = "Which InvokeAI package to use.";
+      description = "Which Automatic1111 package to use.";
       type = types.package;
     };
 
     user = mkOption {
-      description = "Which user to run InvokeAI as.";
-      default = "invokeai";
+      description = "Which user to run A1111 as.";
+      default = "a1111";
       type = types.str;
     };
 
     group = mkOption {
-      description = "Which group to run InvokeAI as.";
-      default = "invokeai";
+      description = "Which group to run A1111 as.";
+      default = "a1111";
       type = types.str;
     };
 
@@ -52,27 +52,21 @@ in
         in attrsOf (either atom (listOf atom));
         options = {
           host = mkOption {
-            description = "Which IP address to listen on.";
-            default = "127.0.0.1";
-            type = types.str;
+            description = "Launch gradio with 0.0.0.0 as server name, allowing to respond to network requests.";
+            default = false;
+            type = types.bool;
           };
 
           port = mkOption {
-            description = "Which port to listen on.";
-            default = 9090;
+            description = "Launch gradio with given server port, you need root/admin rights for ports < 1024; defaults to 7860 if available.";
+            default = 7860;
             type = types.port;
           };
 
           root = mkOption {
-            description = "Where to store InvokeAI's state.";
-            default = "/var/lib/invokeai";
+            description = "Where to store A1111's state.";
+            default = "/var/lib/a1111";
             type = types.path;
-          };
-
-          precision = mkOption {
-            description = "Set model precision.";
-            default = "auto";
-            type = types.enum [ "auto" "float32" "autocast" "float16" ];
           };
         };
       };
@@ -98,21 +92,20 @@ in
     ) cfg.settings)) ++ cfg.extraArgs;
 
   in mkIf cfg.enable {
-    users.users = mkIf (cfg.user == "invokeai") {
+    users.users = mkIf (cfg.user == "a1111") {
       invokeai = {
         isSystemUser = true;
         inherit (cfg) group;
       };
     };
-    users.groups = mkIf (cfg.group == "invokeai") {
-      invokeai = {};
+    users.groups = mkIf (cfg.group == "a1111") {
+      a1111 = {};
     };
-    systemd.services.invokeai = {
+    systemd.services.a1111 = {
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       environment = {
         HOME = "${cfg.settings.root}/.home";
-        INVOKEAI_ROOT = "${cfg.settings.root}";
         NIXIFIED_AI_NONINTERACTIVE = "1";
       };
       serviceConfig = {
