@@ -106,12 +106,13 @@ in
       wantedBy = [ "multi-user.target" ];
       environment = {
         HOME = "${cfg.settings.data-dir}/.home";
+        COMMANDLINE_ARGS = ''${cliArgs}'';
         NIXIFIED_AI_NONINTERACTIVE = "1";
       };
       serviceConfig = {
         User = cfg.user;
         Group = cfg.group;
-        ExecStart = "${getExe cfg.package} ${escapeShellArgs cliArgs}";
+        ExecStart = "${getExe cfg.package} ${escapeShellArgs}";
         PrivateTmp = true;
       };
     };
