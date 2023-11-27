@@ -69,7 +69,7 @@ in
             type = types.path;
           };
 
-          data-dir = mkOption {
+          ckpt-dir = mkOption {
             description = "Path to A1111's SD models.";
             default = "/var/lib/models/ckpt";
             type = types.path;
