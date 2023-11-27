@@ -105,7 +105,7 @@ in
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       environment = {
-        HOME = "${cfg.settings.root}/.home";
+        HOME = "${cfg.settings.data-dir}/.home";
         NIXIFIED_AI_NONINTERACTIVE = "1";
       };
       serviceConfig = {
@@ -116,9 +116,9 @@ in
       };
     };
     systemd.tmpfiles.rules = [
-      "d '${cfg.settings.root}' 0755 ${cfg.user} ${cfg.group} - -"
-      "d '${cfg.settings.root}/configs' 0755 ${cfg.user} ${cfg.group} - -"
-      "d '${cfg.settings.root}/.home' 0750 ${cfg.user} ${cfg.group} - -"
+      "d '${cfg.settings.data-dir}' 0755 ${cfg.user} ${cfg.group} - -"
+      "d '${cfg.settings.data-dir}/configs' 0755 ${cfg.user} ${cfg.group} - -"
+      "d '${cfg.settings.data-dir}/.home' 0750 ${cfg.user} ${cfg.group} - -"
     ];
   };
 }
