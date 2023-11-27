@@ -106,7 +106,7 @@ in
       wantedBy = [ "multi-user.target" ];
       environment = {
         HOME = "${cfg.settings.data-dir}/.home";
-        COMMANDLINE_ARGS = escapShellArgs cliArgs;
+        COMMANDLINE_ARGS = escapeShellArgs cliArgs;
         NIXIFIED_AI_NONINTERACTIVE = "1";
       };
       serviceConfig = {
