@@ -18,7 +18,7 @@ in
     { old = "dataDir"; new = "root"; }
     { old = "precision"; }
   ];
-  options.services.invokeai = {
+  options.services.a1111 = {
     enable = mkEnableOption "Automatic1111 UI for Stable Diffusion";
 
     package = mkOption {
@@ -93,7 +93,7 @@ in
 
   in mkIf cfg.enable {
     users.users = mkIf (cfg.user == "a1111") {
-      invokeai = {
+      a1111 = {
         isSystemUser = true;
         inherit (cfg) group;
       };
