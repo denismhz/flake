@@ -112,7 +112,7 @@ in
       serviceConfig = {
         User = cfg.user;
         Group = cfg.group;
-        ExecStart = "${getExe cfg.package} ${escapeShellArgs}";
+        ExecStart = "${getExe cfg.package}";
         PrivateTmp = true;
       };
     };
