@@ -83,7 +83,7 @@ in
 
     cliArgs = (flatten (mapAttrsToList (n: v:
       if v == null then []
-      else if isBool v then [ "--${optionalString v }--${n}" ]
+      else if isBool v then [ "--${optionalString v }${n}" ]
       else if isInt v then [ "--${n}" "${toString v}" ]
       else if isFloat v then [ "--${n}" "${floatToString v}" ]
       else if isString v then ["--${n}" v ]
