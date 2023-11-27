@@ -90,7 +90,7 @@ in
     in
     {
       a1111 = ./nixos;
-      invokeai-nvidia = {
+      a1111-nvidia = {
         imports = [
           config.flake.nixosModules.invokeai
           (packageModule "a1111-nvidia")
