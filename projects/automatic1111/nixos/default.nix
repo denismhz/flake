@@ -68,6 +68,12 @@ in
             default = "/var/lib/a1111";
             type = types.path;
           };
+
+          data-dir = mkOption {
+            description = "Path to A1111's SD models.";
+            default = "/var/lib/models/ckpt";
+            type = types.path;
+          };
         };
       };
     };
