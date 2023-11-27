@@ -35,17 +35,17 @@ in
 
   flake.nixosModules = let
     packageModule = pkgAttrName: { pkgs, ... }: {
-      services.a1111.package = withSystem pkgs.system (
+      services.bark-gui.package = withSystem pkgs.system (
         { config, ... }: lib.mkOptionDefault config.packages.${pkgAttrName}
       );
     };
   in {
-    bark-gui = ./nixos;
-    invokeai-nvidia = {
-      imports = [
-        config.flake.nixosModules.invokeai
-        (packageModule "bark-gui-nvidia")
-      ];
-    };
+    #bark-gui = ./nixos;
+    #invokeai-nvidia = {
+    #  imports = [
+    #    config.flake.nixosModules.invokeai
+    #    (packageModule "bark-gui-nvidia")
+    #  ];
+    #};
   };
 }

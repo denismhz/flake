@@ -48,13 +48,13 @@ in
     kohya_ss = ./nixos;
     kohya_ss-amd = {
       imports = [
-        config.flake.nixosModules.invokeai
+        config.flake.nixosModules.kohya_ss
         (packageModule "kohya_ss-amd")
       ];
     };
     kohya_ss-nvidia = {
       imports = [
-        config.flake.nixosModules.invokeai
+        config.flake.nixosModules.kohya_ss
         (packageModule "kohya_ss-nvidia")
       ];
     };
