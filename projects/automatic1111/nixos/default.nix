@@ -51,11 +51,11 @@ in
           ]);
         in attrsOf (either atom (listOf atom));
         options = {
-          listen = mkOption {
-            description = "Launch gradio with 0.0.0.0 as server name, allowing to respond to network requests.";
-            default = false;
-            type = types.bool;
-          };
+          #listen = mkOption {
+          #  description = "Launch gradio with 0.0.0.0 as server name, allowing to respond to network requests.";
+          #  default = false;
+          #  type = types.bool;
+          #};
 
           port = mkOption {
             description = "Launch gradio with given server port, you need root/admin rights for ports < 1024; defaults to 7860 if available.";
