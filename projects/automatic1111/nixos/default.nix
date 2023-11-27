@@ -51,7 +51,7 @@ in
           ]);
         in attrsOf (either atom (listOf atom));
         options = {
-          host = mkOption {
+          listen = mkOption {
             description = "Launch gradio with 0.0.0.0 as server name, allowing to respond to network requests.";
             default = false;
             type = types.bool;
@@ -63,7 +63,7 @@ in
             type = types.port;
           };
 
-          root = mkOption {
+          data-dir = mkOption {
             description = "Where to store A1111's state.";
             default = "/var/lib/a1111";
             type = types.path;
@@ -83,7 +83,7 @@ in
 
     cliArgs = (flatten (mapAttrsToList (n: v:
       if v == null then []
-      else if isBool v then [ "--${optionalString (!v) "no-"}${n}" ]
+      else if isBool v then [ "--${optionalString v }--${n}" ]
       else if isInt v then [ "--${n}" "${toString v}" ]
       else if isFloat v then [ "--${n}" "${floatToString v}" ]
       else if isString v then ["--${n}" v ]
