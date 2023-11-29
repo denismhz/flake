@@ -36,6 +36,7 @@ in
           ../../packages/gradio-client
           ../../packages/k_diffusion
           ../../packages/lpips
+          ../../packages/mediapipe
           ../../packages/openclip
           ../../packages/pillow
           ../../packages/pyfunctional
@@ -45,6 +46,7 @@ in
           ../../packages/tomesd
           ../../packages/torch-fidelity
           ../../packages/torch-grammar
+          ../../packages/ultralytics
           ../../packages/xformers
           ../../packages/zipunicode
         ])

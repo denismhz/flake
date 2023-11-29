@@ -40,7 +40,7 @@ python3Packages.buildPythonPackage {
     transformers
     xformers
 
-    #For Extensions
+    #For Extensions -- dont know if e.g you dont install image browser then maybe lack of dep for civitai browser
     pyfunctional #infinite image browser
     dill #infinite image browser
     python-dotenv #infinite image browser
@@ -51,6 +51,11 @@ python3Packages.buildPythonPackage {
 
     send2trash #civitai browser+
     zipunicode #civitai browser+
+
+    rich #adetailer
+    ultralytics #adetailer
+    py-cpuinfo #adetailer
+    mediapipe #adeteailer
   ];
 
   patches = [ ./_outputpaths.patch ];
