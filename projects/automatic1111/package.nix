@@ -41,7 +41,7 @@ python3Packages.buildPythonPackage {
     xformers
 
     #For Extensions
-    #pyfunctional #infinite image browser
+    pyfunctional #infinite image browser
     python-dotenv #infinite image browser
     fastapi #infinite image browser
     uvicorn #infinite image browser

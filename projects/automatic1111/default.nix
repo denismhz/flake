@@ -38,6 +38,7 @@ in
           ../../packages/lpips
           ../../packages/openclip
           ../../packages/pillow
+          ../../packages/pyfunctional
           ../../packages/pytorch-lightning
           ../../packages/realesrgan
           ../../packages/taming-transformers-rom1504
