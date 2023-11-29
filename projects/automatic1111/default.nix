@@ -46,6 +46,7 @@ in
           ../../packages/torch-fidelity
           ../../packages/torch-grammar
           ../../packages/xformers
+          ../../packages/zipunicode
         ])
         (final: prev: lib.mapAttrs
           (_: pkg: pkg.overrideAttrs (old: {

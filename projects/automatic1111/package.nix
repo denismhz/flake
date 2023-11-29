@@ -47,6 +47,10 @@ python3Packages.buildPythonPackage {
     fastapi #infinite image browser
     uvicorn #infinite image browser
     tabulate #infinite image browser
+    #infinite image browser sends dleted images to nirvana
+
+    send2trash #civitai browser+
+    zipunicode #civitai browser+
   ];
 
   patches = [ ./_outputpaths.patch ];
@@ -121,5 +125,6 @@ python3Packages.buildPythonPackage {
   };
 
   #Tiled VAE supported without additional dependencies
-  #Infinit image browser
+  #Infinit image browser couple of deps
+  #civit-ai browser + couple of deps
 }
