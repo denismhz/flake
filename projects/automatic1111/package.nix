@@ -39,6 +39,12 @@ python3Packages.buildPythonPackage {
     torch
     transformers
     xformers
+
+    #For Extensions
+    #pyfunctional #infinite image browser
+    python-dotenv #infinite image browser
+    fastapi #infinite image browser
+    uvicorn #infinite image browser
   ];
 
   patches = [ ./_outputpaths.patch ];
@@ -111,4 +117,7 @@ python3Packages.buildPythonPackage {
     homepage = "https://github.com/AUTOMATIC1111/stable-diffusion-webui";
     mainProgram = "launch-wrapped.py";
   };
+
+  #Tiled VAE supported without additional dependencies
+  #Infinit image browser
 }
