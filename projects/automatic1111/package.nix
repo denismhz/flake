@@ -42,9 +42,11 @@ python3Packages.buildPythonPackage {
 
     #For Extensions
     pyfunctional #infinite image browser
+    dill #infinite image browser
     python-dotenv #infinite image browser
     fastapi #infinite image browser
     uvicorn #infinite image browser
+    tabulate #infinite image browser
   ];
 
   patches = [ ./_outputpaths.patch ];
