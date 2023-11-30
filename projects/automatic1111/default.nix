@@ -30,6 +30,7 @@ in
           ../../packages/blendmodes
           ../../packages/blip
           ../../packages/codeformer
+          ../../packages/deforum
           ../../packages/facexlib
           ../../packages/gfpgan
           ../../packages/gradio

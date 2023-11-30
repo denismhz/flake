@@ -57,6 +57,11 @@ python3Packages.buildPythonPackage {
     ultralytics #adetailer
     py-cpuinfo #adetailer
     mediapipe #adeteailer
+    
+    av #animatediff to create webm and other fileformats
+
+    numexpr #deforum
+    deforum #deforum
   ];
 
   patches = [ ./_outputpaths.patch ];
@@ -133,5 +138,6 @@ python3Packages.buildPythonPackage {
   #Tiled VAE supported without additional dependencies
   #Infinit image browser couple of deps
   #civit-ai browser + couple of deps
-  #animatediff
+  #animatediff --> needs deforum for frame interpolation
+  #deforum
 }
