@@ -51,6 +51,7 @@ python3Packages.buildPythonPackage {
 
     send2trash #civitai browser+
     zipunicode #civitai browser+
+    fake-useragent #civitai browser+
 
     rich #adetailer
     ultralytics #adetailer
@@ -132,4 +133,5 @@ python3Packages.buildPythonPackage {
   #Tiled VAE supported without additional dependencies
   #Infinit image browser couple of deps
   #civit-ai browser + couple of deps
+  #animatediff
 }
