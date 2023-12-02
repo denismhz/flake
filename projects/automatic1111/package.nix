@@ -140,4 +140,5 @@ python3Packages.buildPythonPackage {
   #civit-ai browser + couple of deps
   #animatediff --> needs deforum for frame interpolation
   #deforum
+  #controlnet
 }
