@@ -1,23 +1,92 @@
-# WARNING: This file was automatically generated. You should avoid editing it.
-# If you run pynixify again, the file will be either overwritten or
-# deleted, and you will lose the changes you made to it.
-
-{ buildPythonPackage, fetchPypi, lib, torchWithCuda, numpy, pyre-extensions, pythonRelaxDepsHook, which }:
-
-buildPythonPackage rec {
+{ lib
+, buildPythonPackage
+, pythonOlder
+, fetchFromGitHub
+, which
+# runtime dependencies
+, numpy
+, torch
+# check dependencies
+, pytestCheckHook
+, pytest-cov
+# , pytest-mpi
+, pytest-timeout
+# , pytorch-image-models
+, hydra-core
+, fairscale
+, scipy
+, cmake
+, openai-triton
+, networkx
+#, apex
+, einops
+, transformers
+, timm
+#, flash-attn
+}:
+let
+  version = "0.0.22.post7";
+in
+buildPythonPackage {
   pname = "xformers";
-  version = "0.0.16";
+  inherit version;
+  format = "setuptools";
 
-  src = fetchPypi {
-    inherit pname version;
-    sha256 = "sha256-ksfwVWpo9EhkkmkbP1ZxQO4ZK1Y9kEGFtmabH4u4rlM=";
+  disabled = pythonOlder "3.7";
+
+  src = fetchFromGitHub {
+    owner = "facebookresearch";
+    repo = "xformers";
+    rev = "refs/tags/v${version}";
+    hash = "sha256-7lZi3+2dVDZJFYCUlxsyDU8t9qdnl+b2ERRXKA6Zp7U=";
+    fetchSubmodules = true;
   };
-  nativeBuildInputs = [ pythonRelaxDepsHook which ];
-  pythonRelaxDeps = [ "pyre-extensions" ];
-  propagatedBuildInputs = [ torchWithCuda numpy pyre-extensions /*triton*/ ];
 
-  # TODO FIXME
+  preBuild = ''
+    cat << EOF > ./xformers/version.py
+    # noqa: C801
+    __version__ = "${version}"
+    EOF
+  '';
+
+  nativeBuildInputs = [
+    which
+  ];
+
+  propagatedBuildInputs = [
+    numpy
+    torch
+  ];
+
+  pythonImportsCheck = [ "xformers" ];
+
+  dontUseCmakeConfigure = true;
+
+  # see commented out missing packages
   doCheck = false;
 
-  meta = with lib; { };
+  nativeCheckInputs = [
+    pytestCheckHook
+    pytest-cov
+    pytest-timeout
+    hydra-core
+    fairscale
+    scipy
+    cmake
+    networkx
+    openai-triton
+    # apex
+    einops
+    transformers
+    timm
+    # flash-attn
+  ];
+
+  meta = with lib; {
+    description = "XFormers: A collection of composable Transformer building blocks";
+    homepage = "https://github.com/facebookresearch/xformers";
+    changelog = "https://github.com/facebookresearch/xformers/blob/${version}/CHANGELOG.md";
+    license = licenses.bsd3;
+    maintainers = with maintainers; [ happysalada ];
+  };
 }
