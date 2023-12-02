@@ -36,7 +36,7 @@ python3Packages.buildPythonPackage {
     taming-transformers-rom1504
     timm
     tomesd
-    torch
+    torchWithCuda
     transformers
     xformers
 
