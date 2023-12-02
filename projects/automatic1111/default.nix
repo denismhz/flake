@@ -48,7 +48,7 @@ in
           ../../packages/torch-fidelity
           ../../packages/torch-grammar
           ../../packages/ultralytics
-#          ../../packages/xformers
+          ../../packages/xformers
           ../../packages/zipunicode
         ])
         (final: prev: lib.mapAttrs
