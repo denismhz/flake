@@ -45,8 +45,8 @@ in
           ../../packages/realesrgan
           ../../packages/taming-transformers-rom1504
           ../../packages/tomesd
-          ../../packages/torch-fidelity
-          ../../packages/torch-grammar
+          #../../packages/torch-fidelity
+          #../../packages/torch-grammar
           ../../packages/ultralytics
           ../../packages/xformers
           ../../packages/zipunicode
@@ -74,8 +74,16 @@ in
         ]);
       };
 
+      stable-pkgs = import inputs.nixpkgs-stable {
+        allowUnfree = true;
+        cudaSupport = true;
+        inherit system;
+      };
+
       src = inputs.a1111-src;
-      mkAutomatic1111Variant = args: pkgs.callPackage ./package.nix ({ inherit src; sd-src = inputs.sd-src; sgm-src = inputs.sgm-src; } // args);
+      mkAutomatic1111Variant = args: pkgs.callPackage ./package.nix ({ 
+        inherit src; sd-src = inputs.sd-src; sgm-src = inputs.sgm-src; inherit stable-pkgs pkgs;
+        } // args);
     in
     {
       packages = {

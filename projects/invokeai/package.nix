@@ -76,7 +76,7 @@ python3Packages.buildPythonPackage {
     huggingface-hub
     easing-functions
     dynamicprompts
-    torchvision
+    torchvision-bin
     test-tube
   ];
   nativeBuildInputs = with python3Packages; [ pythonRelaxDepsHook pip ];

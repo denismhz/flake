@@ -76,12 +76,14 @@ let
     ln -s ${tmpDir}/presets/ $out/presets
   '';
   textgenPython = python3Packages.python.withPackages (_: with python3Packages; [
+    aiofiles
     accelerate
     bitsandbytes
     colorama
     datasets
     flexgen
     gradio
+    gradio-client
     llama-cpp-python
     markdown
     numpy

@@ -53,7 +53,7 @@
   outputs = { flake-parts, invokeai-src, hercules-ci-effects, ... }@inputs:
     flake-parts.lib.mkFlake { inherit inputs; } {
       perSystem = { system, ... }:{
-        _module.args.pkgs = import inputs.nixpkgs { config.allowUnfree = true; inherit system; };
+        _module.args.pkgs = import inputs.nixpkgs { config.allowUnfree = true; inherit system; cudaSupport = true; };
         legacyPackages = {
           koboldai = builtins.throw ''
 

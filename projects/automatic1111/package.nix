@@ -4,6 +4,8 @@
 , # misc
   lib
 , src
+, stable-pkgs
+, pkgs
   # extra deps
 }:
 python3Packages.buildPythonPackage {
@@ -36,7 +38,8 @@ python3Packages.buildPythonPackage {
     taming-transformers-rom1504
     timm
     tomesd
-    torchWithCuda
+    #torchWithCuda
+    #torch-bin
     transformers
     xformers
 
@@ -62,7 +65,7 @@ python3Packages.buildPythonPackage {
 
     numexpr #deforum
     deforum #deforum
-  ];
+  ]; 
 
   patches = [ ./_outputpaths.patch ];
 
