@@ -8,11 +8,11 @@ let
     floatToString optionalString
   ;
 
-  cfg = config.services.a1111;
+  cfg = config.services.comfyui;
 in
 
 {
-  imports = map ({ old, new ? old }: mkRenamedOptionModule [ "services" "a1111" old ] [ "services" "a1111" "settings" new ]) [
+  imports = map ({ old, new ? old }: mkRenamedOptionModule [ "services" "comfyui" old ] [ "services" "comfyui" "settings" new ]) [
     { old = "host"; }
     { old = "port"; }
     { old = "dataDir"; new = "root"; }

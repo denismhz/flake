@@ -13,11 +13,11 @@ in
         #cant i do like only for this for invoke other version?
         (
           final: prev: {
-            pillow = pkgs.python3.pkgs.callPackage ../../packages/pillow { };
             pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
               (
                 python-final: python-prev: {
                   pillow = python-final.callPackage ../../packages/pillow { };
+                  xformers = python-final.callPackage ../../packages/xformers { inherit stable-pkgs; };
                 }
               )
             ];
@@ -30,21 +30,25 @@ in
           ../../packages/blendmodes
           ../../packages/blip
           ../../packages/codeformer
+          ../../packages/deforum
           ../../packages/facexlib
           ../../packages/gfpgan
           ../../packages/gradio
           ../../packages/gradio-client
           ../../packages/k_diffusion
           ../../packages/lpips
+          ../../packages/mediapipe
           ../../packages/openclip
           ../../packages/pillow
+          ../../packages/pyfunctional
           ../../packages/pytorch-lightning
           ../../packages/realesrgan
           ../../packages/taming-transformers-rom1504
           ../../packages/tomesd
-          ../../packages/torch-fidelity
-          ../../packages/torch-grammar
-          ../../packages/xformers
+          #../../packages/torch-fidelity
+          #../../packages/torch-grammar
+          ../../packages/ultralytics
+          ../../packages/zipunicode
         ])
         (final: prev: lib.mapAttrs
           (_: pkg: pkg.overrideAttrs (old: {
@@ -69,8 +73,16 @@ in
         ]);
       };
 
+      stable-pkgs = import inputs.nixpkgs-stable {
+        allowUnfree = true;
+        cudaSupport = true;
+        inherit system;
+      };
+
       src = inputs.a1111-src;
-      mkAutomatic1111Variant = args: pkgs.callPackage ./package.nix ({ inherit src; sd-src = inputs.sd-src; sgm-src = inputs.sgm-src; } // args);
+      mkAutomatic1111Variant = args: pkgs.callPackage ./package.nix ({ 
+        inherit src; sd-src = inputs.sd-src; sgm-src = inputs.sgm-src; inherit stable-pkgs pkgs;
+        } // args);
     in
     {
       packages = {
@@ -90,9 +102,9 @@ in
     in
     {
       a1111 = ./nixos;
-      invokeai-nvidia = {
+      a1111-nvidia = {
         imports = [
-          config.flake.nixosModules.invokeai
+          config.flake.nixosModules.a1111
           (packageModule "a1111-nvidia")
         ];
       };

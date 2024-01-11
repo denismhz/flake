@@ -20,15 +20,13 @@ python3Packages.buildPythonPackage {
     pytorch-seed
     safetensors
     scipy
-    torch-bin
-    torchaudio-bin
+    torch
+    torchaudio
     transformers
     vector-quantize-pytorch
   ];
   #nativeBuildInputs = with python3Packages; [ pythonRelaxDepsHook pip ];
   nativeBuildInputs = with python3Packages; [ setuptools pip ];
-  #pythonRemoveDeps = [ "clip" "pyreadline3" "flaskwebgui" "opencv-python" ];
-  pythonRelaxDeps = [ "dnspython" "flask" "requests" "numpy" "pytorch-lightning" "torchsde" "uvicorn" "invisible-watermark" "accelerate" "scikit-image" "safetensors" "torchvision" "test-tube" "fastapi" ];
 
   makeWrapperArgs = [
     '' --set-default PYTHONPATH=$PYTHONPATH ''

@@ -7,6 +7,10 @@
   description = "A Nix Flake that makes AI reproducible and easy to run";
 
   inputs = {
+    comfyui-src = {
+      url = github:comfyanonymous/ComfyUI;
+      flake = false;
+    };
     nixpkgs-stable = {
       url = github:NixOS/nixpkgs/nixos-23.05;
     };
@@ -52,17 +56,38 @@
   };
   outputs = { flake-parts, invokeai-src, hercules-ci-effects, ... }@inputs:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      perSystem = { system, ... }:{
-        _module.args.pkgs = import inputs.nixpkgs { config.allowUnfree = true; inherit system; };
+      perSystem = { system, ... }: {
+        #  _module.args.pkgs = import inputs.nixpkgs { config.allowUnfree = true; inherit system; config.cudaSupport = true; };
+        _module.args.pkgs = import inputs.nixpkgs {
+          inherit system;
+          /*overlays = [
+            (
+              final: prev: {
+                final.python310 = prev.python310.override {
+                  enableOptimizations = true;
+                  reproducibleBuild = false;
+                  self = final.python310;
+                  buildInputs = [ final.ffmpeg-full ];
+                };
+                pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+                  (
+                    python-final: python-prev: {
+                      torch = python-prev.torch-bin;
+                    }
+                  )
+                ];
+              }
+            )
+          ];*/
+          config = { allowUnfree = true; cudaSupport = true; };
+        };
         legacyPackages = {
           koboldai = builtins.throw ''
+            koboldai has been dropped from nixified.ai due to lack of upstream development,
+            try textgen instead which is better maintained. If you would like to use the last
+            available version of koboldai with nixified.ai, then run:
 
-
-                   koboldai has been dropped from nixified.ai due to lack of upstream development,
-                   try textgen instead which is better maintained. If you would like to use the last
-                   available version of koboldai with nixified.ai, then run:
-
-                   nix run github:nixified.ai/flake/0c58f8cba3fb42c54f2a7bf9bd45ee4cbc9f2477#koboldai
+            nix run github:nixified.ai/flake/0c58f8cba3fb42c54f2a7bf9bd45ee4cbc9f2477#koboldai
           '';
         };
       };
@@ -72,8 +97,9 @@
       debug = true;
       imports = [
         hercules-ci-effects.flakeModule
-#        ./modules/nixpkgs-config
+        #        ./modules/nixpkgs-config
         ./overlays
+        ./projects/comfyui
         ./projects/automatic1111
         ./projects/invokeai
         ./projects/textgen

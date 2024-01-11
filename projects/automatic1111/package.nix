@@ -4,6 +4,8 @@
 , # misc
   lib
 , src
+, stable-pkgs
+, pkgs
   # extra deps
 }:
 python3Packages.buildPythonPackage {
@@ -36,12 +38,37 @@ python3Packages.buildPythonPackage {
     taming-transformers-rom1504
     timm
     tomesd
-    torch
+    torchWithCuda
     transformers
     xformers
-  ];
+
+    #For Extensions -- dont know if e.g you dont install image browser then maybe lack of dep for civitai browser
+    pyfunctional #infinite image browser
+    dill #infinite image browser
+    python-dotenv #infinite image browser
+    fastapi #infinite image browser
+    uvicorn #infinite image browser
+    tabulate #infinite image browser
+    #infinite image browser sends dleted images to nirvana
+
+    send2trash #civitai browser+
+    zipunicode #civitai browser+
+    fake-useragent #civitai browser+
+
+    rich #adetailer
+    ultralytics #adetailer
+    py-cpuinfo #adetailer
+    mediapipe #adeteailer
+    
+    av #animatediff to create webm and other fileformats
+
+    numexpr #deforum
+    deforum #deforum
+  ]; 
 
   patches = [ ./_outputpaths.patch ];
+
+  nativeBuildInputs = [ pkgs.cudatoolkit ];
 
   buildPhase =
   ''
@@ -70,12 +97,12 @@ python3Packages.buildPythonPackage {
     chmod +x launch.py
     makeWrapper "$out/launch.py" $out/bin/launch-wrapped.py \
       --run 'export COMMANDLINE_ARGS="''${COMMANDLINE_ARGS:-\
-      --data-dir $HOME/webui --skip-install \
+      --data-dir $HOME/webui --skip-install --xformers \
       --theme dark --ckpt-dir $HOME/webui/models/ckpt \
       --embeddings-dir $HOME/webui/models/embeddings \
       --medvram --no-half-vae}"' \
       --set-default PYTHONPATH $PYTHONPATH \
-      --chdir $out
+      --chdir $out --set-default CUDA_PATH ${pkgs.cudatoolkit}
 
     rm -rf dist
 
@@ -111,4 +138,11 @@ python3Packages.buildPythonPackage {
     homepage = "https://github.com/AUTOMATIC1111/stable-diffusion-webui";
     mainProgram = "launch-wrapped.py";
   };
+
+  #Tiled VAE supported without additional dependencies
+  #Infinit image browser couple of deps
+  #civit-ai browser + couple of deps
+  #animatediff --> needs deforum for frame interpolation
+  #deforum
+  #controlnet
 }
