@@ -13,11 +13,11 @@ in
         #cant i do like only for this for invoke other version?
         (
           final: prev: {
-            pillow = pkgs.python3.pkgs.callPackage ../../packages/pillow { };
             pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
               (
                 python-final: python-prev: {
                   pillow = python-final.callPackage ../../packages/pillow { };
+                  xformers = python-final.callPackage ../../packages/xformers { inherit stable-pkgs; };
                 }
               )
             ];
@@ -48,7 +48,6 @@ in
           #../../packages/torch-fidelity
           #../../packages/torch-grammar
           ../../packages/ultralytics
-          ../../packages/xformers
           ../../packages/zipunicode
         ])
         (final: prev: lib.mapAttrs

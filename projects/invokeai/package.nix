@@ -2,6 +2,7 @@
 # misc
 , lib
 , src
+, pkgs
 # extra deps
 }:
 

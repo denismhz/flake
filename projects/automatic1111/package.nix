@@ -38,8 +38,7 @@ python3Packages.buildPythonPackage {
     taming-transformers-rom1504
     timm
     tomesd
-    #torchWithCuda
-    #torch-bin
+    torchWithCuda
     transformers
     xformers
 
@@ -69,6 +68,8 @@ python3Packages.buildPythonPackage {
 
   patches = [ ./_outputpaths.patch ];
 
+  nativeBuildInputs = [ pkgs.cudatoolkit ];
+
   buildPhase =
   ''
     runHook preBuild
@@ -96,12 +97,12 @@ python3Packages.buildPythonPackage {
     chmod +x launch.py
     makeWrapper "$out/launch.py" $out/bin/launch-wrapped.py \
       --run 'export COMMANDLINE_ARGS="''${COMMANDLINE_ARGS:-\
-      --data-dir $HOME/webui --skip-install \
+      --data-dir $HOME/webui --skip-install --xformers \
       --theme dark --ckpt-dir $HOME/webui/models/ckpt \
       --embeddings-dir $HOME/webui/models/embeddings \
       --medvram --no-half-vae}"' \
       --set-default PYTHONPATH $PYTHONPATH \
-      --chdir $out
+      --chdir $out --set-default CUDA_PATH ${pkgs.cudatoolkit}
 
     rm -rf dist
 

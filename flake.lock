@@ -32,6 +32,22 @@
         "type": "github"
       }
     },
+    "comfyui-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1702736172,
+        "narHash": "sha256-BYZHfnhdubasOAhUyq/iW4HvYKPiqBwiXY3ozZXU1Oc=",
+        "owner": "comfyanonymous",
+        "repo": "ComfyUI",
+        "rev": "6453dc1ca2d98d89af7cf312bb48d1e3fd2ca27f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "comfyanonymous",
+        "repo": "ComfyUI",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -251,6 +267,7 @@
       "inputs": {
         "a1111-src": "a1111-src",
         "bark-gui-src": "bark-gui-src",
+        "comfyui-src": "comfyui-src",
         "flake-parts": "flake-parts",
         "hercules-ci-effects": "hercules-ci-effects",
         "invokeai-src": "invokeai-src",
