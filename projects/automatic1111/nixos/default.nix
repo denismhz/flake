@@ -1,22 +1,42 @@
-{ config, lib, ... }:
-
-let
-  inherit (lib)
-    mkIf mkOption mkEnableOption mkRenamedOptionModule types
-    escapeShellArgs flatten getExe mapAttrsToList
-    isBool isFloat isInt isList isString
-    floatToString optionalString
-  ;
+{
+  config,
+  lib,
+  ...
+}: let
+  inherit
+    (lib)
+    mkIf
+    mkOption
+    mkEnableOption
+    mkRenamedOptionModule
+    types
+    escapeShellArgs
+    flatten
+    getExe
+    mapAttrsToList
+    isBool
+    isFloat
+    isInt
+    isList
+    isString
+    floatToString
+    optionalString
+    ;
 
   cfg = config.services.a1111;
-in
-
-{
-  imports = map ({ old, new ? old }: mkRenamedOptionModule [ "services" "a1111" old ] [ "services" "a1111" "settings" new ]) [
-    { old = "host"; }
-    { old = "port"; }
-    { old = "dataDir"; new = "root"; }
-    { old = "precision"; }
+in {
+  imports = map ({
+    old,
+    new ? old,
+  }:
+    mkRenamedOptionModule ["services" "a1111" old] ["services" "a1111" "settings" new]) [
+    {old = "host";}
+    {old = "port";}
+    {
+      old = "dataDir";
+      new = "root";
+    }
+    {old = "precision";}
   ];
   options.services.a1111 = {
     enable = mkEnableOption "Automatic1111 UI for Stable Diffusion";
@@ -40,7 +60,7 @@ in
 
     settings = mkOption {
       description = "Structured command line arguments.";
-      default = { };
+      default = {};
       type = types.submodule {
         freeformType = with types; let
           atom = nullOr (oneOf [
@@ -49,7 +69,8 @@ in
             int
             float
           ]);
-        in attrsOf (either atom (listOf atom));
+        in
+          attrsOf (either atom (listOf atom));
         options = {
           #listen = mkOption {
           #  description = "Launch gradio with 0.0.0.0 as server name, allowing to respond to network requests.";
@@ -86,46 +107,55 @@ in
   };
 
   config = let
-
-    cliArgs = (flatten (mapAttrsToList (n: v:
-      if v == null then []      
-      #else if isBool v then [ "--${optionalString (!v) "no-"}${n}" ]
-      else if isInt v then [ "--${n}" "${toString v}" ]
-      else if isFloat v then [ "--${n}" "${floatToString v}" ]
-      else if isString v then ["--${n}" v ]
-      else if isList v then [ "--${n}" (toString v) ]
-      else throw "Unhandled type for setting \"${n}\""
-    ) cfg.settings)) ++ cfg.extraArgs;
-
-  in mkIf cfg.enable {
-    users.users = mkIf (cfg.user == "a1111") {
-      a1111 = {
-        isSystemUser = true;
-        inherit (cfg) group;
+    cliArgs =
+      (flatten (mapAttrsToList (
+          n: v:
+            if v == null
+            then []
+            #else if isBool v then [ "--${optionalString (!v) "no-"}${n}" ]
+            else if isInt v
+            then ["--${n}" "${toString v}"]
+            else if isFloat v
+            then ["--${n}" "${floatToString v}"]
+            else if isString v
+            then ["--${n}" v]
+            else if isList v
+            then ["--${n}" (toString v)]
+            else throw "Unhandled type for setting \"${n}\""
+        )
+        cfg.settings))
+      ++ cfg.extraArgs;
+  in
+    mkIf cfg.enable {
+      users.users = mkIf (cfg.user == "a1111") {
+        a1111 = {
+          isSystemUser = true;
+          inherit (cfg) group;
+        };
       };
-    };
-    users.groups = mkIf (cfg.group == "a1111") {
-      a1111 = {};
-    };
-    systemd.services.a1111 = {
-      after = [ "network.target" ];
-      wantedBy = [ "multi-user.target" ];
-      environment = {
-        HOME = "${cfg.settings.data-dir}/.home";
-        COMMANDLINE_ARGS = escapeShellArgs cliArgs;
-        NIXIFIED_AI_NONINTERACTIVE = "1";
+      users.groups = mkIf (cfg.group == "a1111") {
+        a1111 = {};
       };
-      serviceConfig = {
-        User = cfg.user;
-        Group = cfg.group;
-        ExecStart = "${getExe cfg.package}";
-        PrivateTmp = true;
+      systemd.services.a1111 = {
+        after = ["network.target"];
+        wantedBy = ["multi-user.target"];
+        environment = {
+          HOME = "${cfg.settings.data-dir}/.home";
+          COMMANDLINE_ARGS = escapeShellArgs cliArgs;
+          NIXIFIED_AI_NONINTERACTIVE = "1";
+        };
+        serviceConfig = {
+          User = cfg.user;
+          Group = cfg.group;
+          ExecStart = "${getExe cfg.package}";
+          Restart = "always";
+          PrivateTmp = true;
+        };
       };
+      systemd.tmpfiles.rules = [
+        "d '${cfg.settings.data-dir}/' 0755 ${cfg.user} ${cfg.group} - -"
+        "d '${cfg.settings.data-dir}/configs' 0755 ${cfg.user} ${cfg.group} - -"
+        "d '${cfg.settings.data-dir}/.home' 0750 ${cfg.user} ${cfg.group} - -"
+      ];
     };
-    systemd.tmpfiles.rules = [
-      "d '${cfg.settings.data-dir}/' 0755 ${cfg.user} ${cfg.group} - -"
-      "d '${cfg.settings.data-dir}/configs' 0755 ${cfg.user} ${cfg.group} - -"
-      "d '${cfg.settings.data-dir}/.home' 0750 ${cfg.user} ${cfg.group} - -"
-    ];
-  };
 }

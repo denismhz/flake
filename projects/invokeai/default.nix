@@ -1,12 +1,18 @@
-{ config, inputs, lib, withSystem, ... }:
-
-let
+{
+  config,
+  inputs,
+  lib,
+  withSystem,
+  ...
+}: let
   l = lib // config.flake.lib;
   inherit (config.flake) overlays;
-in
-
-{
-  perSystem = { config, pkgs, ... }: let
+in {
+  perSystem = {
+    config,
+    pkgs,
+    ...
+  }: let
     commonOverlays = [
       overlays.python-fixPackages
       (l.overlays.callManyPackages [
@@ -44,37 +50,43 @@ in
         ../../packages/mediapipe
         ../../packages/python-engineio
       ])
-      (final: prev: lib.mapAttrs
-        (_: pkg: pkg.overrideAttrs (old: {
-          nativeBuildInputs = old.nativeBuildInputs ++ [ final.pythonRelaxDepsHook ];
-          pythonRemoveDeps = [ "opencv-python-headless" "opencv-python" "tb-nightly" "clip" ];
-        }))
-        {
-          inherit (prev)
-            albumentations
-            qudida
-            gfpgan
-            basicsr
-            facexlib
-            realesrgan
-            clipseg
-          ;
-        }
+      (
+        final: prev:
+          lib.mapAttrs
+          (_: pkg:
+            pkg.overrideAttrs (old: {
+              nativeBuildInputs = old.nativeBuildInputs ++ [final.pythonRelaxDepsHook];
+              pythonRemoveDeps = ["opencv-python-headless" "opencv-python" "tb-nightly" "clip"];
+            }))
+          {
+            inherit
+              (prev)
+              albumentations
+              qudida
+              gfpgan
+              basicsr
+              facexlib
+              realesrgan
+              clipseg
+              ;
+          }
       )
     ];
 
     python3Variants = {
-      amd = l.overlays.applyOverlays pkgs.python3Packages (commonOverlays ++ [
-        overlays.python-torchRocm
-      ]);
-      nvidia = l.overlays.applyOverlays pkgs.python3Packages (commonOverlays ++ [
-        overlays.python-torchCuda
-      ]);
+      amd = l.overlays.applyOverlays pkgs.python3Packages (commonOverlays
+        ++ [
+          overlays.python-torchRocm
+        ]);
+      nvidia = l.overlays.applyOverlays pkgs.python3Packages (commonOverlays
+        ++ [
+          overlays.python-torchCuda
+        ]);
     };
 
     src = inputs.invokeai-src;
 
-    mkInvokeAIVariant = args: pkgs.callPackage ./package.nix ({ inherit src; } // args);
+    mkInvokeAIVariant = args: pkgs.callPackage ./package.nix ({inherit src;} // args);
   in {
     packages = {
       invokeai-amd = mkInvokeAIVariant {
@@ -87,9 +99,9 @@ in
   };
 
   flake.nixosModules = let
-    packageModule = pkgAttrName: { pkgs, ... }: {
+    packageModule = pkgAttrName: {pkgs, ...}: {
       services.invokeai.package = withSystem pkgs.system (
-        { config, ... }: lib.mkOptionDefault config.packages.${pkgAttrName}
+        {config, ...}: lib.mkOptionDefault config.packages.${pkgAttrName}
       );
     };
   in {

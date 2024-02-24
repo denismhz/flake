@@ -1,17 +1,16 @@
-{ src 
-, buildPythonPackage
-, torchvision-bin
-, torch-bin
-, safetensors
-, psutil
-, einops
-, transformers
-, scipy
-, torchsde
-, pillow
-, torch
-, torchvision
-, accelerate
+{
+  src,
+  buildPythonPackage,
+  safetensors,
+  psutil,
+  einops,
+  transformers,
+  scipy,
+  torchsde,
+  pillow,
+  torch,
+  torchvision,
+  accelerate,
 }:
 buildPythonPackage {
   pname = "ComfyUI";
@@ -29,22 +28,24 @@ buildPythonPackage {
     scipy
     pillow
     torchsde
-  ]; 
+  ];
 
-  buildPhase =
-  ''
+  buildPhase = ''
     runHook preBuild
-    
+
     mkdir -p dist
     cp -R . $out
     chmod -R +w $out
     cd $out
-
+    substituteInPlace ./folder_paths.py --replace 'os.path.join(base_path, "models")' '"/home/denis/comfyui/models"'
+    substituteInPlace ./folder_paths.py --replace 'os.path.join(os.path.dirname(os.path.realpath(__file__)), "temp")' '"/home/denis/comfyui/temp"'
+    substituteInPlace ./folder_paths.py --replace 'os.path.join(os.path.dirname(os.path.realpath(__file__)), "output")' '"/home/denis/comfyui/output"'
+    substituteInPlace ./folder_paths.py --replace 'os.path.join(os.path.dirname(os.path.realpath(__file__)), "input")' '"/home/denis/comfyui/input"'
     #make main.py executable > shebang
     mkdir -p $out/bin
     cat <<-EOF > main.py
-    $(echo "#!/usr/bin/python") 
-    $(cat main.py) 
+    $(echo "#!/usr/bin/python")
+    $(cat main.py)
     EOF
     chmod +x main.py
     makeWrapper "$out/main.py" $out/bin/main-wrapped.py \
@@ -60,11 +61,4 @@ buildPythonPackage {
     homepage = "https://github.com/comfyanonymous/ComfyUI.git";
     mainProgram = "main-wrapped.py";
   };
-
-  #Tiled VAE supported without additional dependencies
-  #Infinit image browser couple of deps
-  #civit-ai browser + couple of deps
-  #animatediff --> needs deforum for frame interpolation
-  #deforum
-  #controlnet
 }

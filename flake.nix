@@ -1,18 +1,18 @@
 {
   nixConfig = {
-    extra-substituters = [ "https://ai.cachix.org" ];
-    extra-trusted-public-keys = [ "ai.cachix.org-1:N9dzRK+alWwoKXQlnn0H6aUx0lU/mspIoz8hMvGvbbc=" ];
+    extra-substituters = ["https://ai.cachix.org"];
+    extra-trusted-public-keys = ["ai.cachix.org-1:N9dzRK+alWwoKXQlnn0H6aUx0lU/mspIoz8hMvGvbbc="];
   };
 
   description = "A Nix Flake that makes AI reproducible and easy to run";
 
   inputs = {
     comfyui-src = {
-      url = github:comfyanonymous/ComfyUI;
+      url = "github:comfyanonymous/ComfyUI";
       flake = false;
     };
     nixpkgs-stable = {
-      url = github:NixOS/nixpkgs/nixos-23.05;
+      url = "github:NixOS/nixpkgs/nixos-23.11";
     };
     bark-gui-src = {
       url = "github:C0untFloyd/bark-gui";
@@ -54,32 +54,21 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { flake-parts, invokeai-src, hercules-ci-effects, ... }@inputs:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      perSystem = { system, ... }: {
+  outputs = {
+    flake-parts,
+    invokeai-src,
+    hercules-ci-effects,
+    ...
+  } @ inputs:
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      perSystem = {system, ...}: {
         #  _module.args.pkgs = import inputs.nixpkgs { config.allowUnfree = true; inherit system; config.cudaSupport = true; };
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
-          /*overlays = [
-            (
-              final: prev: {
-                final.python310 = prev.python310.override {
-                  enableOptimizations = true;
-                  reproducibleBuild = false;
-                  self = final.python310;
-                  buildInputs = [ final.ffmpeg-full ];
-                };
-                pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-                  (
-                    python-final: python-prev: {
-                      torch = python-prev.torch-bin;
-                    }
-                  )
-                ];
-              }
-            )
-          ];*/
-          config = { allowUnfree = true; cudaSupport = true; };
+          config = {
+            allowUnfree = true;
+            cudaSupport = true;
+          };
         };
         legacyPackages = {
           koboldai = builtins.throw ''
@@ -103,8 +92,8 @@
         ./projects/automatic1111
         ./projects/invokeai
         ./projects/textgen
-        ./projects/kohya_ss
-        ./projects/bark-gui
+        #./projects/kohya_ss
+        #./projects/bark-gui
         ./website
       ];
     };
